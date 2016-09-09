@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 import random
+from random import randint
+import time,threading
+from multiprocessing import Process
+from datetime import datetime,timedelta
 
+import re
 from smart_qq_bot.logger import logger
 from smart_qq_bot.signals import (
     on_all_message,
@@ -29,6 +34,30 @@ def callout(msg, bot):
         logger.info("RUNTIMELOG " + str(msg.from_uin) + " calling me out, trying to reply....")
         reply_content = "干嘛（‘·д·）" + random.choice(REPLY_SUFFIX)
         reply(reply_content)
+
+@on_all_message(name='testSendGroup')
+def testSendGroup(msg, bot):
+    #logger.info('testSendGroup'+msg.content)
+    match=re.match(r'reminder', str(msg.content))
+    logger.info('match : '+str(match))
+    if match:
+        t = threading.Thread(target=loop, args=(bot,msg))
+        t.start()
+
+def loop(bot,msg):
+    now = datetime.now()
+    to = now + timedelta(minutes=10)
+    while True:
+        time.sleep(60)
+        now = datetime.now()
+        logger.info("now:"+str(now)+"to:"+str(to))
+        if now>to:
+            bot.send_discuss_msg('今天打球有人吗?', msg.did, randint(1, 100000))
+            to = now + timedelta(minutes=10)
+        
+
+        
+
 
 
 # =====复读插件=====

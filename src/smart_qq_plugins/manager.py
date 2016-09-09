@@ -8,7 +8,7 @@ from smart_qq_bot.handler import (
     inactivate,
 )
 from smart_qq_bot.logger import logger
-from smart_qq_bot.messages import GroupMsg, PrivateMsg
+from smart_qq_bot.messages import GroupMsg, PrivateMsg,DiscussMsg
 from smart_qq_bot.signals import on_all_message, on_bot_inited
 
 cmd_hello = re.compile(r"!hello")
@@ -34,7 +34,11 @@ def do_inactivate(text):
 
 def do_hello(text):
     if re.match(cmd_hello, text):
-        return "大头沙皮!"
+        return "鹅是 SB!"
+
+def do_reminder(text):
+    if re.match(cmd_remaind,text):
+        return         
 
 
 def do_list_plugin(text):
@@ -61,15 +65,22 @@ def hello_bot(msg, bot):
         do_hello,
     )
     private_handlers = (
-        do_inactivate, do_activate, do_list_plugin
+        do_hello,do_inactivate, do_activate, do_list_plugin
     )
     if isinstance(msg, GroupMsg):
+        #logger.info("GroupMsg msg : " + msg)
         for handler in group_handlers:
             result = handler(msg.content)
             if result is not None:
                 return bot.reply_msg(msg, result)
     elif isinstance(msg, PrivateMsg):
+        logger.info(msg)
         for handler in private_handlers:
+            result = handler(msg.content)
+            if result is not None:
+                return bot.reply_msg(msg, result)
+    elif isinstance(msg, DiscussMsg):
+        for handler in group_handlers:
             result = handler(msg.content)
             if result is not None:
                 return bot.reply_msg(msg, result)
