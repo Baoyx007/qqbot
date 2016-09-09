@@ -46,9 +46,9 @@ def testSendGroup(msg, bot):
 
 def loop(bot,msg):
     now = datetime.now()
-    to = now + timedelta(minutes=10)
+    to = now + timedelta(weeks=1)
     while True:
-        time.sleep(60)
+        time.sleep(60*60*12)
         now = datetime.now()
         logger.info("now:"+str(now)+"to:"+str(to))
         if now>to:
